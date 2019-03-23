@@ -1,0 +1,72 @@
+address_0h:
+## Init Src Ptr
+# Src* = 0x3a # (str)
+    SET_REG1    0xa0
+    SET_PTR
+    SET_REG1    0x3a
+    STORE
+
+## Init Dst Ptr
+# Dst* = 0xf0 # (Display)
+    SET_REG1    0xa1
+    SET_PTR
+    SET_REG1    0xf0
+    STORE
+
+address_0ch:
+## StrCpy
+# Read *Src
+    SET_REG1    0xa0
+    SET_PTR
+    LOAD
+    SET_PTR
+    LOAD
+ 
+# If ! Src* { goto Exit }
+    JNZ         18
+    SET_REG1    1
+    JNZ         36
+ 
+address_18h:
+## Write Dst Char
+# *Dst = *Src
+    SWAP
+    SET_REG1    0xa1
+    SET_PTR
+    LOAD
+    SET_PTR
+    SWAP
+    STORE
+
+# Src += 1
+    SET_REG1    0xa0
+    SET_PTR
+    LOAD
+    SWAP
+    SET_REG1    0x1
+    SWAP
+    ADD
+    STORE
+
+# Dst += 1
+    SET_REG1    0xa1
+    SET_PTR
+    LOAD
+    SWAP
+    SET_REG1    0x1
+    SWAP
+    ADD
+    STORE
+
+# While True { Loop StrCpy }
+    JNZ         0x0c
+
+address_36h:
+## Exit
+# Halt
+    SET_REG1    0x1
+    JNZ         0x38
+
+address_3ah:
+# str = "Hello World !"
+    0x48 0x65 0x6c 0x6c 0x6f 0x20 0x57 0x6f 0x72 0x6c 0x64 0x20 0x21 0x00
